@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Grid
 {
-    public Tile playerStartingPoint { get; }
+    private Tile playerStartingPoint;
 
     private int width;
     private int height;
@@ -20,7 +20,27 @@ public class Grid
         tiles = new Tile[width, height];
 
         GenerateTiles();
+        HuntWalls();        
+        PrepareStartingPoint();
+    }
 
+    private void HuntWalls()
+    {
+        int i = 0;
+        int j = 0;
+        while(i != width && j!= height) {
+            for (i = 0; i < width; i++)
+            {
+                for (j = 0; j < height; j++)
+                {
+                    KillWalls(tiles[i, j]);
+                }
+            }
+        }            
+    }
+
+    private void PrepareStartingPoint()
+    {
         int fwidth = width / 4;
         int fheight = height / 4;
 
@@ -29,62 +49,14 @@ public class Grid
 
         playerStartingPoint = tiles[randX, randY];
 
+        Debug.Log("STARTING " + playerStartingPoint.ToString());
         List<Tile> neighbours = GetTileNeighbours(playerStartingPoint, NoCheck);
 
-        KillWalls(playerStartingPoint);
-
-        HuntWalls();
-        WUT();
-
-        PrepareStartingPoint(playerStartingPoint, neighbours);
-    }
-
-    private void WUT()
-    {
-        Tile last = tiles[0, 0];
-        for (int i = 0; i < width ; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-                Tile current = tiles[i, j];
-                if (!current.isVisited)
-                {
-                    List<Tile> neighbours = GetTileNeighbours(current, NoCheck);
-                    int randomTileIndex = Random.Range(0, neighbours.Count);
-                    Tile neighbour = neighbours[randomTileIndex];
-                    KillAllSuroundingWalls(current, neighbour);
-                }
-            }
-        }
-    }
-
-    private void HuntWalls()
-    {        
-        for (int i = 0; i < width ; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-                Tile current = tiles[i, j];
-                if (!current.isVisited)
-                {
-                    List<Tile> neighbours = GetTileNeighbours(current, NoCheck);
-                    int randomTileIndex = Random.Range(0, neighbours.Count);
-                    Tile neighbour = neighbours[randomTileIndex];
-                    KillWalls(neighbour);
-                }
-            }
-        }
-    }
-
-    private void PrepareStartingPoint(Tile tile, List<Tile> neighbours)
-    {
         foreach (var neighbour in neighbours)
         {
-            KillAllSuroundingWalls(tile, neighbour);
+            KillAllSuroundingWalls(playerStartingPoint, neighbour);
         }
-    }
-
-    
+    }    
 
     private bool NoCheck(Tile tile)
     {
