@@ -51,6 +51,16 @@ public class World : MonoBehaviour
         return ref startingPosition;
     }
 
+    public Vector2Int GetStartingTilePosition()
+    {
+        return grid.GetStartingTile().position;
+    }
+
+    public bool isMovementPosible(Vector2Int currentPosition, Vector2Int dir)
+    {
+        return grid.IsMovementPosible(currentPosition, dir);
+    }
+
 
     private void InstantiateSpawners(List<Tile> tiles)
     {

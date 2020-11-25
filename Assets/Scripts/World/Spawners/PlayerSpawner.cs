@@ -19,5 +19,9 @@ public class PlayerSpawner : Spawner
     {
         Debug.Log(location.transform.position);
         GameObject spawn = Instantiate(toSpawn, new Vector3(location.transform.position.x, location.transform.position.y, -2), Quaternion.identity);
+
+        Movement movementScript = spawn.GetComponent<Movement>();
+        movementScript.SetWorld(world);
+
     }
 }

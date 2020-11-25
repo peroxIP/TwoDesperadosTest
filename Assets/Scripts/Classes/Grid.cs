@@ -221,6 +221,48 @@ public class Grid
         return neigbours;
     }
 
+ 
+
+    public bool IsMovementPosible(Vector2Int currentPosition , Vector2Int dir)
+    {
+
+        Vector2Int neighborPosition = currentPosition + dir;
+
+        neighborPosition = IsOutOfBounds(neighborPosition);
+
+        
+
+        if (neighborPosition != ErrorVector)
+        {
+            Tile current = GetTileAt(currentPosition);
+
+            Debug.Log("UP " + current.walls);
+
+            if (dir == Vector2Int.up)
+            {
+                Debug.Log("UP " + current.walls[(int)Direction.NORTH]);
+                return !current.walls[(int)Direction.NORTH];
+            }
+            else if (dir == Vector2Int.down)
+            {
+                Debug.Log("DOWN " + current.walls[(int)Direction.SOUTH]);
+                return !current.walls[(int)Direction.SOUTH];
+                
+            }
+            else if (dir == Vector2Int.left)
+            {
+                Debug.Log("LEFT " + current.walls[(int)Direction.WEST]);
+                return !current.walls[(int)Direction.WEST];
+            }
+            else if (dir == Vector2Int.right)
+            {
+                Debug.Log("RIGHT " + current.walls[(int)Direction.EAST]);
+                return !current.walls[(int)Direction.EAST];
+            }
+        }
+        return false;
+    }
+
     private Vector2Int IsOutOfBounds(Vector2Int position)
     {
         if (position.x < 0 ||
@@ -292,4 +334,6 @@ public class Grid
                 break;
         }
     }
+
+
 }
