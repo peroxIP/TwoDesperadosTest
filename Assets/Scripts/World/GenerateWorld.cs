@@ -7,6 +7,7 @@ public class GenerateWorld : MonoBehaviour
     public int width;
     public int height;
     public int obsticleCount;
+    public int seed;
 
     public GameObject tilePrefab;
     public GameObject wallPrefab;
@@ -19,7 +20,7 @@ public class GenerateWorld : MonoBehaviour
     {
         PopulateValues();
         allTiles = new GameObject[width, height];
-        grid = new Grid(width, height);
+        grid = new Grid(width, height, seed);
         
         InstantiateTiles(ref grid.GetTiles());
     }
@@ -41,7 +42,7 @@ public class GenerateWorld : MonoBehaviour
                 GameObject floor = Instantiate(tilePrefab, new Vector3(xi, xj, 0), Quaternion.identity);
 
                 floor.name = t.GetName();
-                floor.transform.parent = this.transform;
+                floor.transform.parent = transform;
 
 
                 

@@ -8,16 +8,15 @@ public class Tile
     // N, E, S, W
     public bool[] walls { get; }
 
-    public int x { get;}
-    public int y { get;}
+    public Vector2Int position { get;}
 
     public bool isVisited = false;
+    public bool isOccupied = false;
 
     public Direction neighborAs;
     public Tile(int x, int y)
     {
-        this.x = x;
-        this.y = y;
+        this.position = new Vector2Int(x,y);
 
         obsticle = false;
 
@@ -31,12 +30,12 @@ public class Tile
 
     public string GetName()
     {
-        return "Floor x=" + x + " y=" + y;
+        return "Floor " + position;
     }
 
     override
     public string ToString()
     {
-        return "Floor x=" + x + " y=" + y + " isVisited: " + isVisited + " neighborAs:" + neighborAs;
+        return GetName() + " isVisited: " + isVisited + " neighborAs:" + neighborAs;
     }
 }
