@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Grid
 {
-    private Tile playerStartingPoint;
+    private Tile playerStartingTile;
 
     private int numberOfSpawners;
     private List<Tile> spawnerTiles;
@@ -56,7 +56,7 @@ public class Grid
 
         GenerateTiles();
         HuntWalls();
-        //cleanup
+        // TODO: CLEANUP
         PreparePlayerStartingPoint();
         PrepareSpawnerStartingPoints();
     }
@@ -64,6 +64,16 @@ public class Grid
     public ref Tile[,] GetTiles()
     {
         return ref tiles;
+    }
+
+    public ref Tile GetStartingTile()
+    {
+        return ref playerStartingTile;
+    }
+
+    public ref List<Tile> GetSpawnerPositions()
+    {
+        return ref spawnerTiles;
     }
 
     private void GetDirectionFactory()
@@ -147,18 +157,18 @@ public class Grid
         int randX = Random.Range(fwidth, width - fwidth);
         int randY = Random.Range(fheight, height - fheight);
 
-        playerStartingPoint = tiles[randX, randY];
+        playerStartingTile = tiles[randX, randY];
 
-        playerStartingPoint.isOccupied = true;
+        playerStartingTile.isOccupied = true;
 
-        Debug.Log("STARTING " + playerStartingPoint.ToString());
-        List<Tile> neighbours = GetTileNeighbours(playerStartingPoint, GetDirection.Keys.ToList());
+        Debug.Log("STARTING " + playerStartingTile.ToString());
+        List<Tile> neighbours = GetTileNeighbours(playerStartingTile, GetDirection.Keys.ToList());
 
         foreach (var neighbour in neighbours)
         {
             neighbour.isOccupied = true;
 
-            KillAllSuroundingWalls(playerStartingPoint, neighbour);
+            KillAllSuroundingWalls(playerStartingTile, neighbour);
         }
     }
 
