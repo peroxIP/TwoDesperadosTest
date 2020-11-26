@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviour, IPartOfWorld
 {
     public float movementDelay;
 
@@ -48,7 +48,7 @@ public class Movement : MonoBehaviour
 #endif
 
         Vector2Int dir = new Vector2Int(horizontal, vertical);
-        bool ok = world.isMovementPosible(position, dir);
+        bool ok = world.IsMovementPosible(position, dir);
         if(ok)
         {
             position = position + dir;
@@ -64,7 +64,7 @@ public class Movement : MonoBehaviour
 
     }
 
-    internal void SetWorld(World w)
+    public void SetWorld(World w)
     {
         world = w;
         position = world.GetStartingTilePosition();

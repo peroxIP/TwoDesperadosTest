@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class PlayerSpawner : Spawner
 {
-    
     public override void CustomStart()
     {
-        SpawnPlayer(world.GetStarting());
+        SpawnPlayer(world.GetStartingTilePosition());
     }
 
     public override void SubscribeToController()
@@ -15,13 +14,10 @@ public class PlayerSpawner : Spawner
         gameController.SubscribePlayerSpawner(this);
     }
 
-    private void SpawnPlayer(GameObject location)
+    private void SpawnPlayer(Vector2Int location)
     {
-        Debug.Log(location.transform.position);
-        GameObject spawn = Instantiate(toSpawn, new Vector3(location.transform.position.x, location.transform.position.y, -2), Quaternion.identity);
+        GameObject spawn = Instantiate(toSpawn, new Vector3(location.x, location.y, -2), Quaternion.identity);
 
-        Movement movementScript = spawn.GetComponent<Movement>();
-        movementScript.SetWorld(world);
-
+        world.AdditionalSetup(spawn);
     }
 }

@@ -10,14 +10,15 @@ public class Grid
     private int numberOfSpawners;
     private List<Tile> spawnerTiles;
 
-    private int width;
-    private int height;
+    public readonly int width;
+    public readonly int height;
 
-    private int fwidth;
-    private int fheight;
+    public readonly int fwidth;
+    public readonly int fheight;
 
     private Tile[,] tiles;
 
+    HuntAndKill huntAndKill;
 
     private delegate Vector2Int DirectionHelper(Vector2Int v);
 
@@ -55,15 +56,34 @@ public class Grid
         tiles = new Tile[width, height];
 
         GenerateTiles();
-        HuntWalls();
+
+        huntAndKill = new HuntAndKill(this);
+
+        huntAndKill.HuntWalls();
         // TODO: CLEANUP
         PreparePlayerStartingPoint();
         PrepareSpawnerStartingPoints();
     }
 
-    public ref Tile[,] GetTiles()
+    public IEnumerable<Tile> GetTiles()
     {
-        return ref tiles;
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                yield return tiles[i, j];
+            }
+        }
+    }
+
+    public Tile GetTile(Vector2Int position)
+    {
+        return tiles[position.x, position.y];
+    }
+
+    public Tile GetTile(int x, int y)
+    {
+        return tiles[x, y];
     }
 
     public ref Tile GetStartingTile()
@@ -98,7 +118,7 @@ public class Grid
         for (int i = 0; i < numberOfSpawners; i++)
         {
             Tile potential = GetPotentialTileForSpawner();
-            Debug.Log("SPAWNER TILE " + numberOfSpawners + ": " + potential.ToString());
+            Debug.Log("SPAWNER TILE " + i + ": " + potential.ToString());
 
             spawnerTiles.Add(potential);
 
@@ -110,6 +130,20 @@ public class Grid
             }
         }
     }
+
+    private Vector2Int IsOutOfBounds(Vector2Int position)
+    {
+        if (position.x < 0 ||
+            position.x > width - 1 ||
+            position.y < 0 ||
+            position.y > height - 1)
+        {
+            return ErrorVector;
+        }
+        return position;
+    }
+
+
 
     private Tile GetPotentialTileForSpawner()
     {
@@ -168,32 +202,14 @@ public class Grid
         {
             neighbour.isOccupied = true;
 
-            KillAllSuroundingWalls(playerStartingTile, neighbour);
+            huntAndKill.KillAllSuroundingWalls(playerStartingTile, neighbour);
         }
     }
 
-    private void HuntWalls()
-    {
-        int i = 0;
-        int j = 0;
-        while (i != width && j != height)
-        {
-            for (i = 0; i < width; i++)
-            {
-                for (j = 0; j < height; j++)
-                {
-                    KillWalls(tiles[i, j]);
-                }
-            }
-        }
-    }
-
-    private List<Tile> GetTileNeighbours(Tile tile)
+    public List<Tile> GetTileNeighbours(Tile tile)
     {
         return GetTileNeighbours(tile, NESW, true);
-    }
-
- 
+    } 
 
     private List<Tile> GetTileNeighbours(Tile tile, List<Direction> directions, bool CheckIsVisited = false)
     {
@@ -209,7 +225,7 @@ public class Grid
 
             if (neighborPosition != ErrorVector)
             {
-                Tile neighbor = GetTileAt(neighborPosition);
+                Tile neighbor = GetTile(neighborPosition);
                 if (CheckIsVisited && neighbor.isVisited)
                 {
                     continue;
@@ -234,7 +250,7 @@ public class Grid
 
         if (neighborPosition != ErrorVector)
         {
-            Tile current = GetTileAt(currentPosition);
+            Tile current = GetTile(currentPosition);
 
             Debug.Log("UP " + current.walls);
 
@@ -263,23 +279,9 @@ public class Grid
         return false;
     }
 
-    private Vector2Int IsOutOfBounds(Vector2Int position)
-    {
-        if (position.x < 0 ||
-            position.x > width - 1 ||
-            position.y < 0 ||
-            position.y > height - 1)
-        {
-            return ErrorVector;
-        }
-        return position;
-    }
 
-    private Tile GetTileAt(Vector2Int position)
-    {
-        return tiles[position.x, position.y];
-    }
- 
+
+
     private void GenerateTiles()
     {
         for (int i = 0; i < width; i++)
@@ -290,50 +292,8 @@ public class Grid
             }
         }
     }
-    
-    private void KillWalls(Tile tile)
-    {
-        List<Tile> neighbours = GetTileNeighbours(tile);
 
-        if (neighbours.Count == 0 )
-        {
-            return;
-        }
-        int randomTileIndex = Random.Range(0, neighbours.Count);
 
-        Tile neighbour = neighbours[randomTileIndex];
-
-        KillAllSuroundingWalls(tile, neighbour);
-
-        KillWalls(neighbour);
-    }
-
-    private void KillAllSuroundingWalls(Tile mainTile, Tile neighbour)
-    {
-        mainTile.isVisited = true;
-        neighbour.isVisited = true;
-        switch (neighbour.neighborAs)
-        {
-            case Direction.NORTH:
-                mainTile.walls[(int)Direction.NORTH] = false;
-                neighbour.walls[(int)Direction.SOUTH] = false;
-                break;
-            case Direction.EAST:
-                mainTile.walls[(int)Direction.EAST] = false;
-                neighbour.walls[(int)Direction.WEST] = false;
-                break;
-            case Direction.SOUTH:
-                mainTile.walls[(int)Direction.SOUTH] = false;
-                neighbour.walls[(int)Direction.NORTH] = false;
-                break;
-            case Direction.WEST:
-                mainTile.walls[(int)Direction.WEST] = false;
-                neighbour.walls[(int)Direction.EAST] = false;
-                break;
-            default:
-                break;
-        }
-    }
 
 
 }

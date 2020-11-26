@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public abstract class Spawner : MonoBehaviour
+public abstract class Spawner : MonoBehaviour, IPartOfWorld, IGameControlled
 {
     public GameObject toSpawn;
 
@@ -22,5 +22,6 @@ public abstract class Spawner : MonoBehaviour
     }
 
     public abstract void SubscribeToController();
+
     public abstract void CustomStart();
 }

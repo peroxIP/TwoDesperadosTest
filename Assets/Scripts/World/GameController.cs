@@ -7,7 +7,7 @@ public class GameController : MonoBehaviour
     Spawner playerSpawner;
     List<Spawner> enemySpawners;
 
-    void Start()
+    void Awake()
     {
         enemySpawners = new List<Spawner>();
     }
