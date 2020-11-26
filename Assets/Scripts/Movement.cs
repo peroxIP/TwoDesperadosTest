@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Movement : MonoBehaviour, IPartOfWorld
+public class Movement : MonoBehaviour, IPartOfWorld, IGameControlled
 {
+    
+
     public float movementDelay;
 
     private float currentMovementDelay = 0;
@@ -48,17 +51,8 @@ public class Movement : MonoBehaviour, IPartOfWorld
 #endif
 
         Vector2Int dir = new Vector2Int(horizontal, vertical);
-        bool ok = world.IsMovementPosible(position, dir);
-        if(ok)
-        {
-            position = position + dir;
-            currentMovementDelay = movementDelay;
-            transform.position = new Vector3(transform.position.x + horizontal, transform.position.y + vertical, transform.position.z);
-        }
-        else
-        {
-            Debug.Log("NE");
-        }
+        MoveTo(dir);
+        
         
         //Debug.Log("HORIZONTAL: " + horizontal + " VERTICAL: " + vertical);
 
@@ -68,5 +62,59 @@ public class Movement : MonoBehaviour, IPartOfWorld
     {
         world = w;
         position = world.GetStartingTilePosition();
+    }
+
+    public void GoLeft()
+    {
+        MoveTo(Vector2Int.left);
+    }
+
+    public void GoRight()
+    {
+        MoveTo(Vector2Int.right);
+    }
+
+    public void GoUp()
+    {
+        MoveTo(Vector2Int.up);
+    }
+
+    public void GoDown()
+    {
+        MoveTo(Vector2Int.down);
+    }
+
+    private void MoveTo(Vector2Int dir)
+    {
+        bool ok = world.IsMovementPosible(position, dir);
+        if (ok)
+        {
+            position = position + dir;
+            currentMovementDelay = movementDelay;
+            transform.position = new Vector3(position.x, position.y, transform.position.z);
+        }
+        else
+        {
+            Debug.Log("NE");
+        }
+    }
+
+    public void SetGameController(GameController controller)
+    {
+        //debilana delux, cant assign game objects to prefab
+        controller.MoveUp.onClick.AddListener(GoUp);
+        controller.MoveDown.onClick.AddListener(GoDown);
+        controller.MoveLeft.onClick.AddListener(GoLeft);
+        controller.MoveRight.onClick.AddListener(GoRight);
+    }
+
+    public void SubscribeToController()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CustomStart()
+    {
+        throw new NotImplementedException();
     }
 }
