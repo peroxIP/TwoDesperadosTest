@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -47,10 +48,11 @@ public class Grid
         spawnerTiles = new List<Tile>();
 
         numberOfSpawners = (width + height) / 4;
+        //numberOfSpawners = 1;
 
         if (seed !=0)
         {
-            Random.InitState(seed);
+            UnityEngine.Random.InitState(seed);
         }
 
         tiles = new Tile[width, height];
@@ -60,9 +62,21 @@ public class Grid
         huntAndKill = new HuntAndKill(this);
 
         huntAndKill.HuntWalls();
-        // TODO: CLEANUP
+
         PreparePlayerStartingPoint();
         PrepareSpawnerStartingPoints();
+    }
+
+    public void RemoveActorFromPosition(GameObject gameObject, Vector2Int position)
+    {
+        Tile t = GetTile(position);
+        t.RemoveActor(gameObject);
+    }
+
+    public void AddActorToPosition(GameObject gameObject, Vector2Int position)
+    {
+        Tile t = GetTile(position);
+        t.AddActor(gameObject);
     }
 
     public IEnumerable<Tile> GetTiles()
@@ -118,7 +132,6 @@ public class Grid
         for (int i = 0; i < numberOfSpawners; i++)
         {
             Tile potential = GetPotentialTileForSpawner();
-            Debug.Log("SPAWNER TILE " + i + ": " + potential.ToString());
 
             spawnerTiles.Add(potential);
 
@@ -149,27 +162,27 @@ public class Grid
     {
         int x = 0;
         int y = 0;
-        int intDir = Random.Range(0, 4);
+        int intDir = UnityEngine.Random.Range(0, 4);
 
         Direction direction = (Direction)intDir;
 
         switch (direction)
         {
             case Direction.NORTH:
-                x = Random.Range(1, width - 1);
-                y = Random.Range(height - fheight, height - 1);
+                x = UnityEngine.Random.Range(1, width - 1);
+                y = UnityEngine.Random.Range(height - fheight, height - 1);
                 break;
             case Direction.EAST:
-                x = Random.Range(width - fwidth, width - 1);
-                y = Random.Range(1, height - 1);
+                x = UnityEngine.Random.Range(width - fwidth, width - 1);
+                y = UnityEngine.Random.Range(1, height - 1);
                 break;
             case Direction.SOUTH:
-                x = Random.Range(1, width - 1);
-                y = Random.Range(1, fheight);
+                x = UnityEngine.Random.Range(1, width - 1);
+                y = UnityEngine.Random.Range(1, fheight);
                 break;
             case Direction.WEST:
-                x = Random.Range(1, fwidth);
-                y = Random.Range(1, height - 1);
+                x = UnityEngine.Random.Range(1, fwidth);
+                y = UnityEngine.Random.Range(1, height - 1);
                 break;
             default:
                 break;
@@ -188,14 +201,13 @@ public class Grid
 
     private void PreparePlayerStartingPoint()
     {
-        int randX = Random.Range(fwidth, width - fwidth);
-        int randY = Random.Range(fheight, height - fheight);
+        int randX = UnityEngine.Random.Range(fwidth, width - fwidth);
+        int randY = UnityEngine.Random.Range(fheight, height - fheight);
 
         playerStartingTile = tiles[randX, randY];
 
         playerStartingTile.isOccupied = true;
 
-        Debug.Log("STARTING " + playerStartingTile.ToString());
         List<Tile> neighbours = GetTileNeighbours(playerStartingTile, GetDirection.Keys.ToList());
 
         foreach (var neighbour in neighbours)
@@ -237,7 +249,29 @@ public class Grid
         return neigbours;
     }
 
- 
+    public List<Tile> GetTileNeighboursThatCanBeWisited(Tile tile)
+    {
+        List<Tile> neigbours = new List<Tile>();
+        foreach (Direction direction in NESW)
+        {
+            DirectionHelper func = GetDirection[direction];
+
+            Vector2Int neighborPosition = func(tile.position);
+
+            neighborPosition = IsOutOfBounds(neighborPosition);
+
+            if (neighborPosition != ErrorVector)
+            {                
+                if (!tile.walls[(int) direction])
+                {
+                    Tile neighbor = GetTile(neighborPosition);
+                    neigbours.Add(neighbor);
+                }
+            }
+        }
+        return neigbours;
+    }
+
 
     public bool IsMovementPosible(Vector2Int currentPosition , Vector2Int dir)
     {
@@ -252,35 +286,26 @@ public class Grid
         {
             Tile current = GetTile(currentPosition);
 
-            Debug.Log("UP " + current.walls);
-
             if (dir == Vector2Int.up)
             {
-                Debug.Log("UP " + current.walls[(int)Direction.NORTH]);
                 return !current.walls[(int)Direction.NORTH];
             }
             else if (dir == Vector2Int.down)
             {
-                Debug.Log("DOWN " + current.walls[(int)Direction.SOUTH]);
                 return !current.walls[(int)Direction.SOUTH];
                 
             }
             else if (dir == Vector2Int.left)
             {
-                Debug.Log("LEFT " + current.walls[(int)Direction.WEST]);
                 return !current.walls[(int)Direction.WEST];
             }
             else if (dir == Vector2Int.right)
             {
-                Debug.Log("RIGHT " + current.walls[(int)Direction.EAST]);
                 return !current.walls[(int)Direction.EAST];
             }
         }
         return false;
     }
-
-
-
 
     private void GenerateTiles()
     {

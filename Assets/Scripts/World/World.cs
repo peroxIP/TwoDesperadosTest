@@ -9,8 +9,6 @@ public class World : MonoBehaviour
     public int height;
     public int obsticleCount;
 
-
-
     public int seed;
 
     public GameObject gameControllerObject;
@@ -21,10 +19,12 @@ public class World : MonoBehaviour
     public GameObject spawnerPrefab;
     
     private Grid grid;
+    private Pathfinding pathfinding;
 
     private GameController gameController;
 
     private List<GameObject> additionalSetup;
+    private int NumberOfSpawners;
 
     private void Awake()
     {
@@ -32,12 +32,25 @@ public class World : MonoBehaviour
         additionalSetup = new List<GameObject>();
         PopulateValues();
         grid = new Grid(width, height, seed);
+        Camera.main.transform.position = new Vector3(width / 2, height / 2, Camera.main.transform.position.z);
+        pathfinding = new AStarCustom(grid);
+    }
+
+    public void AddActorToPosition(GameObject gameObject, Vector2Int position)
+    {
+        grid.AddActorToPosition(gameObject, position);
+    }
+
+    public void RemoveActorFromPosition(GameObject gameObject, Vector2Int position)
+    {
+        grid.RemoveActorFromPosition(gameObject, position);
     }
 
     private void Start()
     {
         InstantiateFloorsAndWalls();
         InstantiateStartingPosition(grid.GetStartingTile().position);
+
         InstantiateSpawners(grid.GetSpawnerPositions());
 
         AdditionalSetup(additionalSetup);
@@ -55,18 +68,29 @@ public class World : MonoBehaviour
         return grid.IsMovementPosible(currentPosition, dir);
     }
 
+    public Stack<Vector2Int> FindPathToOjbective(Vector2Int src)
+    {
+        return pathfinding.FindPathTo(src, grid.GetStartingTile().position);
+    }
+
     public void AdditionalSetup(GameObject gameObject)
     {
-        IPartOfWorld partOfWorld = gameObject.GetComponent<IPartOfWorld>();
-        if (partOfWorld != null)
+        IPartOfWorld[] partOfWorld = gameObject.GetComponents<IPartOfWorld>();
+        if (partOfWorld != null && partOfWorld.Length > 0)
         {
-            partOfWorld.SetWorld(this);
+            foreach (var item in partOfWorld)
+            {
+                item.SetWorld(this);
+            }
         }
 
-        IGameControlled gameControlled = gameObject.GetComponent<IGameControlled>();
-        if (gameControlled != null)
+        IGameControlled[] gameControlled = gameObject.GetComponents<IGameControlled>();
+        if (gameControlled != null && gameControlled.Length > 0)
         {
-            gameControlled.SetGameController(gameController);
+            foreach (var item in gameControlled)
+            {
+                item.SetGameController(gameController);
+            }            
         }
     }
 

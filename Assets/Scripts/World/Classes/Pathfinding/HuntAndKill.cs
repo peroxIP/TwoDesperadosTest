@@ -67,4 +67,9 @@ public class HuntAndKill : Pathfinding
                 break;
         }
     }
+
+    public override Stack<Vector2Int> FindPathTo(Vector2Int src, Vector2Int dest)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -94,4 +94,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toSpawn: {fileID: 7198042433453122714, guid: 2e6f857551ace914f85ab44c435f16a9, type: 3}
   spawnRate: 4
-  maxInitalDelay: 1
+  maxInitalDelay: 3

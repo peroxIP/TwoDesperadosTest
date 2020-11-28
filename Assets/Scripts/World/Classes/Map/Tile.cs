@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,13 +14,18 @@ public class Tile
     public bool isVisited = false;
     public bool isOccupied = false;
 
-    public int f, g, h = 0;
+    public float f, g, h = 0;
     public Tile Parent;
 
     public Direction neighborAs;
+
+    private List<GameObject> Actors;
+
     public Tile(int x, int y)
     {
         this.position = new Vector2Int(x,y);
+
+        Actors = new List<GameObject>();
 
         obsticle = false;
 
@@ -35,10 +41,19 @@ public class Tile
     {
         return "Floor " + position;
     }
-
     
     public override string ToString()
     {
         return GetName() + " isVisited: " + isVisited + " neighborAs:" + neighborAs;
+    }
+
+    internal void RemoveActor(GameObject gameObject)
+    {
+        Actors.Add(gameObject);
+    }
+
+    internal void AddActor(GameObject gameObject)
+    {
+        Actors.Remove(gameObject);
     }
 }
