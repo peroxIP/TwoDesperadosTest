@@ -52,30 +52,19 @@ public class PlayerMovement : Movement
     }
 
 
-    public override void SetGameController(GameController controller)
-    {
-        gameController = controller;
-        //debilana delux, can't assign game objects to prefab
-        controller.MoveUp.onClick.AddListener(GoUp);
-        controller.MoveDown.onClick.AddListener(GoDown);
-        controller.MoveLeft.onClick.AddListener(GoLeft);
-        controller.MoveRight.onClick.AddListener(GoRight);
-    }
 
-    public override void SetWorld(World w)
-    {
-        World = w;
-        Position = World.GetStartingTilePosition();
-        World.AddActorToPosition(this.gameObject, Position);
-    }
 
     public override void SubscribeToController()
     {
-        throw new System.NotImplementedException();
+        //debilana delux, can't assign game objects to prefab
+        gameController.MoveUp.onClick.AddListener(GoUp);
+        gameController.MoveDown.onClick.AddListener(GoDown);
+        gameController.MoveLeft.onClick.AddListener(GoLeft);
+        gameController.MoveRight.onClick.AddListener(GoRight);
     }
 
     public override void CustomStart()
     {
-        throw new System.NotImplementedException();
+        Tag = CollisionTag.Player;
     }
 }

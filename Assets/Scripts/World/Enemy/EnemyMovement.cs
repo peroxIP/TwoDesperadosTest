@@ -8,23 +8,16 @@ public class EnemyMovement : Movement
 
     public override void CustomStart()
     {
-        throw new System.NotImplementedException();
-    }
+        Tag = CollisionTag.Enemy;
 
-    public override void SetGameController(GameController controller)
-    {
-        gameController = controller;
-        SubscribeToController();
-    }
+        Path = World.FindPathToOjbective(Position);
 
-    private void Start()
-    {
         if (Path.Count != 0)
         {
             StartCoroutine(MoveEnemy(movementDelay));
         }
     }
-
+    
     IEnumerator MoveEnemy(float time)
     {
         yield return new WaitForSeconds(time);
@@ -42,14 +35,6 @@ public class EnemyMovement : Movement
         {
             gameController.EnemyReachedObjective(this.gameObject);
         }
-    }
-
-    public override void SetWorld(World w)
-    {
-        World = w;
-        Position = new Vector2Int((int)transform.position.x, (int)transform.position.y);
-        Path = World.FindPathToOjbective(Position);
-        World.AddActorToPosition(this.gameObject, Position);
     }
 
     public override void SubscribeToController()

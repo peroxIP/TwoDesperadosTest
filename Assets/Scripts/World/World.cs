@@ -26,24 +26,78 @@ public class World : MonoBehaviour
     private List<GameObject> additionalSetup;
     private int NumberOfSpawners;
 
+    private Dictionary<Vector2Int, List<RudimentalCollision>> Colision;
+
     private void Awake()
     {
+        Colision = new Dictionary<Vector2Int, List<RudimentalCollision>>();
+
         gameController = gameControllerObject.GetComponent<GameController>();
+
         additionalSetup = new List<GameObject>();
+
         PopulateValues();
         grid = new Grid(width, height, seed);
         Camera.main.transform.position = new Vector3(width / 2, height / 2, Camera.main.transform.position.z);
         pathfinding = new AStarCustom(grid);
     }
 
-    public void AddActorToPosition(GameObject gameObject, Vector2Int position)
+    public void AddActorToPosition(Vector2Int position, CollisionTag tag, Movement movement)
     {
-        grid.AddActorToPosition(gameObject, position);
+        List<RudimentalCollision> PositionColision;
+        bool found = Colision.TryGetValue(position, out PositionColision);
+        if (found)
+        {
+            RudimentalCollision destroyed = null;
+            foreach (RudimentalCollision item in PositionColision)
+            {
+                if (tag == CollisionTag.Bullet && item.Tag != CollisionTag.Bullet)
+                {
+                    Destroy(movement.gameObject);
+                    Destroy(item.Movement.gameObject);
+                    destroyed = item;
+                    break;
+                }
+            }
+            if (destroyed != null)
+            {
+                PositionColision.Remove(destroyed);
+            }
+            else
+            {
+                RudimentalCollision a = new RudimentalCollision(tag, movement);
+                PositionColision.Add(a);
+            }
+        }
+        else
+        {
+            var list = new List<RudimentalCollision>();
+            Colision[position] = list;
+            list.Add(new RudimentalCollision(tag, movement));
+        }
     }
 
-    public void RemoveActorFromPosition(GameObject gameObject, Vector2Int position)
+    public void RemoveActorFromPosition(Vector2Int position, CollisionTag tag, Movement movement)
     {
-        grid.RemoveActorFromPosition(gameObject, position);
+        List<RudimentalCollision> PositionColision;
+        bool found = Colision.TryGetValue(position, out PositionColision);
+        if (found)
+        {
+            RudimentalCollision toRemove = null;
+            foreach (RudimentalCollision item in PositionColision)
+            {
+                if (item.Movement == movement)
+                {
+                    toRemove = item;
+                    break;
+                }
+            }
+
+            if (toRemove != null)
+            {
+                PositionColision.Remove(toRemove);
+            }
+        }
     }
 
     private void Start()

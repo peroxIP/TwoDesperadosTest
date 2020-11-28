@@ -67,18 +67,6 @@ public class Grid
         PrepareSpawnerStartingPoints();
     }
 
-    public void RemoveActorFromPosition(GameObject gameObject, Vector2Int position)
-    {
-        Tile t = GetTile(position);
-        t.RemoveActor(gameObject);
-    }
-
-    public void AddActorToPosition(GameObject gameObject, Vector2Int position)
-    {
-        Tile t = GetTile(position);
-        t.AddActor(gameObject);
-    }
-
     public IEnumerable<Tile> GetTiles()
     {
         for (int i = 0; i < width; i++)
@@ -132,6 +120,7 @@ public class Grid
         for (int i = 0; i < numberOfSpawners; i++)
         {
             Tile potential = GetPotentialTileForSpawner();
+            potential.isOccupied = true;
 
             spawnerTiles.Add(potential);
 

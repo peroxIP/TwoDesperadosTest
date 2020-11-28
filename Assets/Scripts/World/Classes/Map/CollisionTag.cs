@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Shooting : Spawner
+public enum CollisionTag
 {
+    Player,
+    Enemy,
+    Bullet
 }

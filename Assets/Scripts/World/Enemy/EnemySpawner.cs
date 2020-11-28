@@ -20,10 +20,15 @@ public class EnemySpawner : Spawner
 
     IEnumerator SpawnEnemy(float time)
     {
+        
         yield return new WaitForSeconds(time);
         if(gameController.IsLeftEnemies())
         {
-            Spawn();
+            GameObject spawn = Spawn();
+            Debug.Log("SPAWNING " + spawnRate+ " " + Time.time);
+            EnemyMovement enemy = spawn.GetComponent<EnemyMovement>();
+
+            enemy.CustomStart();
 
             StartCoroutine(SpawnEnemy(spawnRate));
         }

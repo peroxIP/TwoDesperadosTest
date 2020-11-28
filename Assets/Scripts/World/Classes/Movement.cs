@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public abstract class Movement : MonoBehaviour, IPartOfWorld, IGameControlled
 {
     public float movementDelay;
+    public CollisionTag Tag;
 
     protected float currentMovementDelay = 0;
     protected Vector2Int Position;
@@ -24,25 +25,35 @@ public abstract class Movement : MonoBehaviour, IPartOfWorld, IGameControlled
         return false;
     }
 
-    protected void MoveTo(Vector2Int dir)
+    protected bool MoveTo(Vector2Int dir)
     {
         bool ok = World.IsMovementPosible(Position, dir);
         if (ok)
         {
-            World.RemoveActorFromPosition(this.gameObject, Position);
-            Position = Position + dir;
-            World.AddActorToPosition(this.gameObject, Position);
+            World.RemoveActorFromPosition(Position, Tag, this);
+            Position += dir;
+            World.AddActorToPosition(Position, Tag, this);
 
             currentMovementDelay = movementDelay;
             transform.position = new Vector3(Position.x, Position.y, transform.position.z);
         }
+        return ok;
     }
-    
-    public abstract void SetWorld(World w);
+
+    public void SetWorld(World w)
+    {
+        World = w;
+
+        Position = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+    }
 
     public abstract void SubscribeToController();
 
     public abstract void CustomStart();
 
-    public abstract void SetGameController(GameController controller);
+    public void SetGameController(GameController controller)
+    {
+        gameController = controller;
+        SubscribeToController();
+    }
 }

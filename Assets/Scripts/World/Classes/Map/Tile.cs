@@ -46,14 +46,4 @@ public class Tile
     {
         return GetName() + " isVisited: " + isVisited + " neighborAs:" + neighborAs;
     }
-
-    internal void RemoveActor(GameObject gameObject)
-    {
-        Actors.Add(gameObject);
-    }
-
-    internal void AddActor(GameObject gameObject)
-    {
-        Actors.Remove(gameObject);
-    }
 }

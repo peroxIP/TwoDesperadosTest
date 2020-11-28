@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class EnemyShooting : Shooting
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void CustomStart()
     {
-        
+        throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void SubscribeToController()
     {
-        
+        throw new System.NotImplementedException();
     }
 }
