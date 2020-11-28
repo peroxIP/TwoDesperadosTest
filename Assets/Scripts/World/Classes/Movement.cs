@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public abstract class Movement : MonoBehaviour, IPartOfWorld, IGameControlled
 {
     public float movementDelay;
-    public CollisionTag Tag;
+    public RudimentalCollision myCollision;
 
     protected float currentMovementDelay = 0;
     protected Vector2Int Position;
@@ -30,9 +30,9 @@ public abstract class Movement : MonoBehaviour, IPartOfWorld, IGameControlled
         bool ok = World.IsMovementPosible(Position, dir);
         if (ok)
         {
-            World.RemoveActorFromPosition(Position, Tag, this);
+            World.RemoveActorFromPosition(Position, myCollision);
             Position += dir;
-            World.AddActorToPosition(Position, Tag, this);
+            World.AddActorToPosition(Position, myCollision);
 
             currentMovementDelay = movementDelay;
             transform.position = new Vector3(Position.x, Position.y, transform.position.z);

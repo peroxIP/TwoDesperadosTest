@@ -23,11 +23,21 @@ public abstract class Spawner : MonoBehaviour, IPartOfWorld, IGameControlled
         SubscribeToController();
     }
 
-    public GameObject Spawn()
+    public GameObject Spawn(bool Start = true)
     {
         GameObject spawn = Instantiate(toSpawn, new Vector3(Position.x, Position.y, -2), Quaternion.identity);
-
+        var components = spawn.GetComponents<IGameControlled>();        
+        
         world.AdditionalSetup(spawn);
+
+        if (Start)
+        {
+            foreach (var item in components)
+            {
+                item.CustomStart();
+            }
+        }
+
         return spawn;
     }
 

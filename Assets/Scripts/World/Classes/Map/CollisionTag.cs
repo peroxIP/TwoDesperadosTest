@@ -6,5 +6,6 @@ public enum CollisionTag
 {
     Player,
     Enemy,
-    Bullet
+    PlayerBullet,
+    EnemyBullet,
 }

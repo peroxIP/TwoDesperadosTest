@@ -24,12 +24,7 @@ public class EnemySpawner : Spawner
         yield return new WaitForSeconds(time);
         if(gameController.IsLeftEnemies())
         {
-            GameObject spawn = Spawn();
-            Debug.Log("SPAWNING " + spawnRate+ " " + Time.time);
-            EnemyMovement enemy = spawn.GetComponent<EnemyMovement>();
-
-            enemy.CustomStart();
-
+            Spawn();
             StartCoroutine(SpawnEnemy(spawnRate));
         }
         else

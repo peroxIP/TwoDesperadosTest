@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerShooting : Shooting
 {
+    RudimentalCollision bulletCollision;
     public override void CustomStart()
     {
-        
+        bulletCollision = new RudimentalCollision(CollisionTag.PlayerBullet, null, new List<CollisionTag> { CollisionTag.Enemy, CollisionTag.EnemyBullet });
     }
 
     public override void SubscribeToController()
@@ -20,10 +21,12 @@ public class PlayerShooting : Shooting
     private void Shoot(Vector2Int dir)
     {
         Position = new Vector2Int((int)transform.position.x, (int)transform.position.y);
-        GameObject spawn = Spawn();
+
+        GameObject spawn = Spawn(Start : false);
         BulletMovement bulletMovement = spawn.GetComponent<BulletMovement>();
 
         bulletMovement.SetDirection(dir);
+        bulletMovement.SetCollisionTag(bulletCollision);
         bulletMovement.CustomStart();
     }
 

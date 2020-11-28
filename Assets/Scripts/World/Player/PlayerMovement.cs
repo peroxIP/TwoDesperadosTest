@@ -51,9 +51,6 @@ public class PlayerMovement : Movement
         MoveTo(Vector2Int.down);
     }
 
-
-
-
     public override void SubscribeToController()
     {
         //debilana delux, can't assign game objects to prefab
@@ -61,10 +58,16 @@ public class PlayerMovement : Movement
         gameController.MoveDown.onClick.AddListener(GoDown);
         gameController.MoveLeft.onClick.AddListener(GoLeft);
         gameController.MoveRight.onClick.AddListener(GoRight);
+
     }
 
     public override void CustomStart()
     {
-        Tag = CollisionTag.Player;
+        myCollision = new RudimentalCollision(CollisionTag.Player, this, new List<CollisionTag> { CollisionTag.Enemy , CollisionTag.EnemyBullet });
+    }
+
+    private void OnDestroy()
+    {
+        gameController.PlayerDestroyed();
     }
 }

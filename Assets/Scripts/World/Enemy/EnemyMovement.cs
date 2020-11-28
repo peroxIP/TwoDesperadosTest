@@ -8,7 +8,7 @@ public class EnemyMovement : Movement
 
     public override void CustomStart()
     {
-        Tag = CollisionTag.Enemy;
+        myCollision = new RudimentalCollision(CollisionTag.Enemy, this, new List<CollisionTag> { CollisionTag.PlayerBullet, CollisionTag.Player});
 
         Path = World.FindPathToOjbective(Position);
 

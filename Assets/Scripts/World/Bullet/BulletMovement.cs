@@ -6,11 +6,19 @@ using UnityEngine;
 public class BulletMovement : Movement
 {
     Vector2Int Direction;
+
+
     public override void CustomStart()
     {
-        Tag = CollisionTag.Bullet;
         StartCoroutine(MoveBullet(movementDelay));
     }
+
+    public void SetCollisionTag(RudimentalCollision parent)
+    {
+        myCollision = parent;
+        myCollision.Movement = this;
+    }
+
 
     IEnumerator MoveBullet(float time)
     {

@@ -70,6 +70,14 @@ public class GameController : MonoBehaviour
         }
     }
 
+    internal void PlayerDestroyed()
+    {
+        if (!finished)
+        {
+            FinishedGame("GAME OVER!");
+        }
+    }
+
     public void EnemyReachedObjective(GameObject gameObject)
     {
         Destroy(gameObject);

@@ -42,7 +42,7 @@ public class World : MonoBehaviour
         pathfinding = new AStarCustom(grid);
     }
 
-    public void AddActorToPosition(Vector2Int position, CollisionTag tag, Movement movement)
+    public void AddActorToPosition(Vector2Int position, RudimentalCollision moving)
     {
         List<RudimentalCollision> PositionColision;
         bool found = Colision.TryGetValue(position, out PositionColision);
@@ -51,9 +51,9 @@ public class World : MonoBehaviour
             RudimentalCollision destroyed = null;
             foreach (RudimentalCollision item in PositionColision)
             {
-                if (tag == CollisionTag.Bullet && item.Tag != CollisionTag.Bullet)
+                if ( item.CollidesWith.Contains(moving.Tag))
                 {
-                    Destroy(movement.gameObject);
+                    Destroy(moving.Movement.gameObject);
                     Destroy(item.Movement.gameObject);
                     destroyed = item;
                     break;
@@ -65,19 +65,18 @@ public class World : MonoBehaviour
             }
             else
             {
-                RudimentalCollision a = new RudimentalCollision(tag, movement);
-                PositionColision.Add(a);
+                PositionColision.Add(moving);
             }
         }
         else
         {
             var list = new List<RudimentalCollision>();
             Colision[position] = list;
-            list.Add(new RudimentalCollision(tag, movement));
+            list.Add(moving);
         }
     }
 
-    public void RemoveActorFromPosition(Vector2Int position, CollisionTag tag, Movement movement)
+    public void RemoveActorFromPosition(Vector2Int position, RudimentalCollision moving)
     {
         List<RudimentalCollision> PositionColision;
         bool found = Colision.TryGetValue(position, out PositionColision);
@@ -86,7 +85,7 @@ public class World : MonoBehaviour
             RudimentalCollision toRemove = null;
             foreach (RudimentalCollision item in PositionColision)
             {
-                if (item.Movement == movement)
+                if (item == moving)
                 {
                     toRemove = item;
                     break;
