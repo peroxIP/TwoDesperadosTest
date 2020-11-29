@@ -9,7 +9,6 @@ public class EnemyShooting : Spawner
 
     private float SeekDelay = 0.1f;
     private RudimentalCollision bulletCollision;
-    private float currentFireDealy = 0;
 
     public override void CustomStart()
     {

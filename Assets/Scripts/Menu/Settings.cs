@@ -7,13 +7,11 @@ public class Settings : MonoBehaviour
 {
     public InputField Width;
     public InputField Height;
-    public InputField ObsticleCount;
 
     private void Start()
     {
         SettingValues.Width = int.Parse(Width.text);
         SettingValues.Height = int.Parse(Height.text);
-        SettingValues.ObsticleCount = int.Parse(ObsticleCount.text);
     }
 
 
@@ -40,16 +38,14 @@ public class Settings : MonoBehaviour
         SettingValues.Height = height;
         Height.text = height.ToString();
     }
-
-    public void ObsticleCountEdited(string value)
-    {
-        int obsticleCount = ValidateValue(value);
-        SettingValues.ObsticleCount = ValidateValue(value);
-        ObsticleCount.text = obsticleCount.ToString();
-    }
-
+    
     private int ValidateValue(string value)
     {
-        return Mathf.Abs(int.Parse(value));
+        int temp = Mathf.Abs(int.Parse(value));
+        if (temp < 5)
+        {
+            return 5;
+        }
+        return temp;
     }
 }
