@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 324938163673838852}
   - component: {fileID: 880267027399700122}
   - component: {fileID: 114610773867021956}
+  - component: {fileID: 114754281783809602}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -93,3 +94,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementDelay: 2
+--- !u!114 &114754281783809602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7198042433453122714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa11963cd9498bf4baa1665fa197c1ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toSpawn: {fileID: 4096006161492185821, guid: db40d1ef42c41984d93bbe4cc597a619, type: 3}
+  VisionRange: 3
+  fireDelay: 5

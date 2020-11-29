@@ -31,6 +31,7 @@ public class BulletMovement : Movement
         }
         else
         {
+            World.RemoveActorFromPosition(Position, myCollision);
             Destroy(this.gameObject);
         }
     }

@@ -42,6 +42,63 @@ public class World : MonoBehaviour
         pathfinding = new AStarCustom(grid);
     }
 
+    private Direction ViewSurroundingDirrection(Vector2Int current, int visionRange, RudimentalCollision bullet, Vector2Int dir, Direction returndir)
+    {
+        for (int i = 0; i < visionRange; i++)
+        {
+            if (IsMovementPosible(current, dir))
+            {
+                current += dir;
+
+                List<RudimentalCollision> PositionColision;
+                bool found = Colision.TryGetValue(current, out PositionColision);
+                if (found)
+                {
+                    foreach (RudimentalCollision item in PositionColision)
+                    {
+                        if (bullet.CollidesWith.Contains(item.Tag))
+                        {
+                            return returndir;
+                        }
+                    }
+                }
+            }
+        }
+        return Direction.NE;
+    }
+
+    public Direction ViewSuroundingTiles(Vector2Int position, int visionRange, RudimentalCollision bullet)
+    {
+        // checking north
+        Direction returnValue;
+
+        returnValue = ViewSurroundingDirrection(position, visionRange, bullet, Vector2Int.up, Direction.NORTH);
+        if(returnValue != Direction.NE)
+        {
+            return returnValue;
+        }
+
+        returnValue = ViewSurroundingDirrection(position, visionRange, bullet, Vector2Int.down, Direction.SOUTH);
+        if (returnValue != Direction.NE)
+        {
+            return returnValue;
+        }
+
+        returnValue = ViewSurroundingDirrection(position, visionRange, bullet, Vector2Int.left, Direction.WEST);
+        if (returnValue != Direction.NE)
+        {
+            return returnValue;
+        }
+
+        returnValue = ViewSurroundingDirrection(position, visionRange, bullet, Vector2Int.right, Direction.EAST);
+        if (returnValue != Direction.NE)
+        {
+            return returnValue;
+        }
+
+        return Direction.NE;
+    }
+
     public void AddActorToPosition(Vector2Int position, RudimentalCollision moving)
     {
         List<RudimentalCollision> PositionColision;

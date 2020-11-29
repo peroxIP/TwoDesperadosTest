@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerShooting : Shooting
+public class PlayerShooting : Spawner
 {
-    RudimentalCollision bulletCollision;
+    private RudimentalCollision bulletCollision;
     public override void CustomStart()
     {
         bulletCollision = new RudimentalCollision(CollisionTag.PlayerBullet, null, new List<CollisionTag> { CollisionTag.Enemy, CollisionTag.EnemyBullet });
